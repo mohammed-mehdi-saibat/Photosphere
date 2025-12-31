@@ -1,81 +1,122 @@
-# 📸 PhotoSphere – Community Photo Gallery
+# PhotoSphere - Livrable 3 : Base de Données
 
-## 🧭 Project Context
+## 📋 Description
 
-**PhotoSphere** is a community-based photo gallery web application developed as part of a pedagogical project for **PixelCraft Digital**, a startup specialized in collaborative photo applications.
-
-The platform allows amateur and professional photographers to:
-
-- Share photos
-- Organize them into albums
-- Interact through likes and comments
-
-All this is done with a **minimalist social approach**, avoiding the complexity of mainstream social networks.
+Galerie photo communautaire permettant aux photographes de partager, organiser et interagir autour de leurs créations.
 
 ---
 
-## 🎯 Project Objectives
+## 🗄️ Structure de la Base de Données
 
-- Design a clean and scalable web application
-- Apply **Object-Oriented Programming (OOP)** principles
-- Respect **SOLID principles** and **PSR-12 coding standards**
-- Model the system using **UML diagrams**
-- Implement a role-based access system
+### Tables Principales
+
+#### **Users**
+
+- Gestion de 4 types d'utilisateurs : Basic, Pro, Moderator, Administrator
+- Attributs spécifiques selon le rôle (quota uploads, abonnement, niveau modération)
+- Authentification sécurisée avec hash bcrypt
+
+#### **Posts**
+
+- Photos uploadées avec métadonnées complètes
+- 3 états : draft, published, archived
+- Limites : 10 Mo max, formats acceptés (JPEG, PNG, GIF)
+- Compteur de vues automatique
+
+#### **Albums**
+
+- Organisation des posts en collections
+- Albums publics (tous) ou privés (Pro uniquement)
+- Maximum 100 photos par album
+- Photo de couverture configurable
+
+#### **Tags**
+
+- Système de catégorisation avec slug unique
+- Normalisation automatique (minuscules, pas de doublons)
+- Compteur d'utilisation
+
+#### **Comments**
+
+- Commentaires hiérarchiques (réponses possibles)
+- Édition trackée avec timestamp
+- Modération par propriétaire/modérateurs
+
+#### **Likes**
+
+- Un like unique par utilisateur/post
+- Horodatage pour statistiques
+
+### Tables de Liaison (N:M)
+
+- **album_posts** : Association posts ↔ albums
+- **post_tags** : Association posts ↔ tags
 
 ---
 
-## 👥 User Roles
+## 🔑 Règles Métier Clés
 
-The application supports multiple user roles:
+### Quotas & Permissions
 
-- **BasicUser**: Amateur photographer with limited uploads
-- **ProUser**: Professional photographer with extended features
-- **Moderator**: Manages community content and user behavior
-- **Administrator**: Manages users and system configuration
+- **BasicUser** : 10 uploads/mois, albums publics uniquement
+- **ProUser** : Uploads illimités, albums privés, statistiques avancées
+- **Moderator** : Suppression commentaires, désactivation comptes
+- **Administrator** : Contrôle total, gestion système
 
-Each role has clearly defined permissions based on the project specifications.
+### Contraintes d'Intégrité
+
+- Cascade DELETE : Suppression utilisateur → suppression posts/albums/comments/likes
+- Unicité : username, email, (user_id, post_id) pour likes
+- Validation : Taille fichiers, formats MIME, longueurs textes
 
 ---
 
-## 📐 UML Diagrams (First Deliverable)
+## 📊 Diagramme Entité-Relation
 
-This repository currently contains the following UML diagrams:
+```mermaid
+erDiagram
+    USER ||--o{ POST : possede
+    USER ||--o{ ALBUM : cree
+    USER ||--o{ COMMENT : ecrit
+    USER ||--o{ LIKE : emet
 
-- ✅ **Use Case Diagram**
-- ✅ **Class Diagram**
+    POST }o--o{ ALBUM : contient
+    POST }o--o{ TAG : tague
+    POST ||--o{ COMMENT : recoit
+    POST ||--o{ LIKE : recoit
 
-## 🛠️ Technical Stack (Planned)
+    COMMENT ||--o{ COMMENT : repond_a
+```
 
-- **Language**: PHP 8+
-- **Paradigm**: Object-Oriented Programming (OOP)
+---
 
-## 📅 Project Planning
+## 🚀 Installation
 
-Project planning is managed using a task board:
+### Prérequis
 
-🔗 **Planning Link**:  
-👉 [https://trello.com/b/WQHvjCvk/photosphere]
+- MySQL 8.0+
+- PHP 8.0+
 
-## 🚧 Project Status
+## 🔒 Sécurité
 
-🟡 **Current Phase**: Analysis & Design
+- Mots de passe hashés (bcrypt)
+- Validation MIME réelle des fichiers
+- Protection injection SQL (prepared statements)
+- Contraintes au niveau base de données
 
-- UML modeling in progress
-- No business logic implemented yet
-- Database schema not finalized
+---
 
-## 📦 Upcoming Deliverables
+## 📈 Performance
 
-- Initial database schema
-- Core domain classes
-- First functional features
+- Index sur colonnes fréquemment requêtées
+- Compteurs dénormalisés (photo_count, usage_count, view_count)
+- CASCADE optimisé pour suppression en masse
 
-## 📄 Author
+---
 
-**Name**: Mohammed Mehdi Saibat  
-**Project Type**: Individual pedagogical project  
-**Duration**: 7 days
+---
 
-## 📌 Notes
+## 📅 Version
 
-This README will be updated progressively throughout the project lifecycle to reflect new features, diagrams, and implementation details.
+**Livrable 3** - Décembre 2024  
+Base de données complète conforme au cahier des charges
