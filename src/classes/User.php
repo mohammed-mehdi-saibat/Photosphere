@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 namespace PHOTOSPHERE\classes;
 
 use DateTime;
@@ -17,7 +20,6 @@ abstract class User
     protected ?DateTime $createdAt = null;
     protected ?string $bio = null;
     protected ?string $profilePicture = null;
-
 
 
     public function __construct(array $data)
@@ -41,9 +43,6 @@ abstract class User
             $this->createdAt = new DateTime();
         }
     }
-
-
-
 
     // GETTERS
     public function getId(): ?int
@@ -80,7 +79,6 @@ abstract class User
     }
     // GETTERS
 
-
     // METHODS
     public function setPassword(string $plainPassword): void
     {
@@ -102,6 +100,7 @@ abstract class User
         }
     }
     // METHODS
+
     // VERIFY
     public static function isValidEmail(string $email)
     {

@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 namespace PHOTOSPHERE\repositories;
 
 use PHOTOSPHERE\database\Database;
@@ -10,6 +13,8 @@ use PHOTOSPHERE\interfaces\UserRepositoryInterface;
 use PHOTOSPHERE\classes\User;
 use PHOTOSPHERE\classes\BasicUser;
 use PHOTOSPHERE\classes\ProUser;
+use PHOTOSPHERE\classes\Moderator;
+use PHOTOSPHERE\classes\Admin;
 use PDO;
 
 class MySQLUserRepository implements UserRepositoryInterface
@@ -18,14 +23,16 @@ class MySQLUserRepository implements UserRepositoryInterface
 
     public function __construct()
     {
-        $this->db = Database::getInstance();
+        $this->db = Database::getInstance()->getConnection();
     }
 
     public function findById(int $id): ?User
     {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id");
         $stmt->execute(['id' => $id]);
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch();
+
+        var_dump($data);
 
         return $data ? $this->mapToUser($data) : null;
     }
@@ -34,7 +41,7 @@ class MySQLUserRepository implements UserRepositoryInterface
     {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE email = :email");
         $stmt->execute(['email' => $email]);
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch();
 
 
         return $data ? $this->mapToUser($data) : null;
@@ -93,6 +100,8 @@ class MySQLUserRepository implements UserRepositoryInterface
     public function mapToUser(array $data): User
     {
         return match ($data['role']) {
+            'admin' => new Admin($data),
+            'moderator' => new Moderator($data),
             'pro' => new ProUser($data),
             'basic' => new BasicUser($data),
             default => new BasicUser($data),

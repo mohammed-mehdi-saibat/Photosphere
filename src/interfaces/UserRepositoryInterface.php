@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
+
 namespace PHOTOSPHERE\interfaces;
 
-require_once __DIR__ . '/../classes/classes.php';
+// require_once __DIR__ . '/../classes/classes.php';
 
 use PHOTOSPHERE\classes\User;
 

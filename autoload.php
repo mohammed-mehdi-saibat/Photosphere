@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 spl_autoload_register(
     function ($className) {
         $prefix = 'PHOTOSPHERE\\';
@@ -7,7 +10,7 @@ spl_autoload_register(
         $base_dir = __DIR__  . '/src/';
 
         $len = strlen($prefix);
-        if (strncmp($prefix, $className, $len !== 0)) {
+        if (strncmp($prefix, $className, $len) !== 0) {
             return;
         }
 

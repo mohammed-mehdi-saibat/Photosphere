@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 namespace PHOTOSPHERE\classes;
 
 require_once __DIR__ . '/User.php';

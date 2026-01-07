@@ -1,7 +1,15 @@
 <?php
 
-require_once './config/db.php';
-require_once './src/database/database.php';
+declare(strict_types=1);
+
+
+
+
+require_once __DIR__ . '/../autoload.php';
+
+use PHOTOSPHERE\database\Database;
+
+
 
 $db = Database::getInstance();
 
@@ -9,5 +17,5 @@ $db = Database::getInstance();
 if ($db) {
     echo 'Success! You are connected to photosphere!';
 } else {
-    throw new ('Connection failed!');
+    throw new Exception('Connection failed!');
 }
